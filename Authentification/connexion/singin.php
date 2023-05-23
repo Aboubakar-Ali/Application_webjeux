@@ -8,7 +8,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'];  
 
         // Fetch the user by username
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE username = ?");
+        $stmt = $pdo->prepare("SELECT * FROM user WHERE username = ?");
         $stmt->execute([$username]);
         $user = $stmt->fetch();
 
@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             session_start();
 
             // Store user data into the session
-            $_SESSION['users'] = $user;
+            $_SESSION['user'] = $user;
 
             // redirection du user sur la page d'acceuil
             header('Location: ../../Acceuil/acceuil.php');

@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = password_hash($_POST['password'], PASSWORD_DEFAULT);  // hachage du mot de passe
 
         // vérification de l'existence du nom d'utilisateur
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = ?");
+        $stmt = $pdo->prepare("SELECT COUNT(*) FROM user WHERE username = ?");
         $stmt->execute([$username]);
         $count = $stmt->fetchColumn();
 
@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             echo 'Le nom d\'utilisateur existe déjà, veuillez choisir un autre nom d\'utilisateur.';
         } else {
             // préparation de la requête
-            $stmt = $pdo->prepare("INSERT INTO users (email, username, password) VALUES (?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO user (email, username, password) VALUES (?, ?, ?)");
             
             // exécution de la requête
             $stmt->execute([$email, $username, $password]);
