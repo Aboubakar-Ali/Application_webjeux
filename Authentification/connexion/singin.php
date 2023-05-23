@@ -20,7 +20,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // Store user data into the session
             $_SESSION['users'] = $user;
 
-            echo 'Connexion réussie';
+            // redirection du user sur la page d'acceuil
+            header('Location: ../../Acceuil/acceuil.php');
         } else {
             echo 'Nom d\'utilisateur ou mot de passe incorrect';
         }

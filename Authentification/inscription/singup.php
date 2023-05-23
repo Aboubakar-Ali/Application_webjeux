@@ -22,7 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // exécution de la requête
             $stmt->execute([$email, $username, $password]);
 
-            echo 'Inscription réussie';
+            // redirection vers la connexion
+            header('Location: ../connexion/singin.html');
         }
     } else {
         echo 'Veuillez remplir tous les champs';
