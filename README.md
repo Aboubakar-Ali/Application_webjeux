@@ -7,3 +7,7 @@ Mettre en place site web dans le but de visualiser et gérer les données d'un j
 * mise en place du systeme d'authentification
 * mise en place du systeme de chat général
 * mise en place du systeme de chat privé
+* mise en place de la page profil
+* mise en place du systeme de modification de la page profil
+* mise en place du systeme de publication d'un article
+* mise en place du systeme de like d'une publication

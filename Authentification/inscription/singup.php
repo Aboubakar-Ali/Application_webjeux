@@ -16,12 +16,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($count > 0) {
             echo 'Le nom d\'utilisateur existe déjà, veuillez choisir un autre nom d\'utilisateur.';
         } else {
+
+            // Sélection d'une image par défaut pour le nouvel utilisateur
+            $default_images = array('../image/profil.jpg', '../image/profil1.jpg'); 
+            $random_image = $default_images[array_rand($default_images)];
+            $default_description = "Hey, Je suis nouveau.";
+
+
             // préparation de la requête
-            $stmt = $pdo->prepare("INSERT INTO user (email, username, password) VALUES (?, ?, ?)");
+            $stmt = $pdo->prepare("INSERT INTO user (email, username, password, photo, description) VALUES (?, ?, ?, ?, ?)");
             
             // exécution de la requête
-            $stmt->execute([$email, $username, $password]);
+            $stmt->execute([$email, $username, $password, $random_image, $default_description]);
 
+        
             // redirection vers la connexion
             header('Location: ../connexion/singin.html');
         }
