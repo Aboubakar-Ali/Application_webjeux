@@ -6,3 +6,4 @@ Mettre en place site web dans le but de visualiser et gérer les données d'un j
 # Systeme fonctionnel
 * mise en place du systeme d'authentification
 * mise en place du systeme de chat général
+* mise en place du systeme de chat privé
