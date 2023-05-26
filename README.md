@@ -11,3 +11,5 @@ Mettre en place site web dans le but de visualiser et gérer les données d'un j
 * mise en place du systeme de modification de la page profil
 * mise en place du systeme de publication d'un article
 * mise en place du systeme de like d'une publication
+* mise en place du systeme de commentaire d'une publication
+* faire défilé les publications à l'acceuil dans une section prédéfini 
