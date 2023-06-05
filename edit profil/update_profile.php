@@ -34,6 +34,6 @@
         $_SESSION['user']['photo'] = $photo_path;
 
         // redirection vers la PP
-        header('Location: ../profil/index.php');
+        header('Location: ../test/test.php');
     }
 ?>
