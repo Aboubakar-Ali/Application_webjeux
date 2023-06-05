@@ -19,8 +19,7 @@
     </head>
 <body>
     <div class="navbar">
-        <h1>Mon Application</h1>
-        <a href="../profil/index.php" class="profile-link">Profil</a>
+        <a href="../test/test.php" class="profile-link">Profil </a>
     </div>
         
     <div class="content">

@@ -2,16 +2,23 @@
 <html>
 <head>
     <title>Envoyer un message privé</title>
+    <link rel="stylesheet" type="text/css" href="inbox.css">
 </head>
 <body>
+<body>
     <form method="POST" action="send_private_message.php">
-        <label for="username">Nom d'utilisateur du destinataire :</label>
+        <div class="container">
+            <div class="card">
+        <label for="username">Destinataire :</label>
         <input type="text" id="username" name="username" required>
     
         <label for="message">Votre message :</label>
         <textarea id="message" name="message" required></textarea>
-    
-        <input type="submit" value="Envoyer">
+        
+        
+        <button class="btn draw-border" type="submit" value="Envoyer">Envoyer</button>
+        </div>
+        </div>
     </form>
 </body>
 </html>

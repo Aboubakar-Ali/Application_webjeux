@@ -25,9 +25,11 @@ if ($receiver) {
     // Insérez un nouvel enregistrement dans la table des messages privés
     $stmt = $pdo->prepare("INSERT INTO private_messages (sender_id, receiver_id, message) VALUES (?, ?, ?)");
     $stmt->execute([$_SESSION['user']['id'], $receiver['id'], $message_content]);
-
-    echo "Votre message a été envoyé avec succès à " . $receiver_username . ".";
+    
+    // Afficher le message de succès avec du code HTML intégré
+    echo "<div style='background-color: green; color: white; padding: 10px;'>Votre message a été envoyé avec succès à " . $receiver_username . ".</div>";
 } else {
-    echo "L'utilisateur " . $receiver_username . " n'existe pas.";
+    // Afficher le message d'erreur avec du code HTML intégré
+    echo "<div style='background-color: red; color: white; padding: 10px;'>L'utilisateur " . $receiver_username . " n'existe pas.</div>";
 }
 ?>

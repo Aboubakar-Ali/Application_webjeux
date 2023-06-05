@@ -7,11 +7,17 @@ body {
     height: 100vh;
 }
 
+.profile-link{
+    position: relative;
+    left: 95%;
+    color: aqua;
+}
 .navbar {
     background-color: #333;
     overflow: hidden;
-    color: white;
-    padding: 14px 16px;
+    color: rgb(7, 7, 7);
+    padding: 40px;
+    display: flex;
 }
 
 .content {
