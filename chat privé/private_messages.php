@@ -11,10 +11,23 @@ if (!isset($_SESSION['user'])) {
     exit();
 }
 
-// Récupérez tous les messages privés où l'utilisateur actuellement connecté est le destinataire
-$stmt = $pdo->prepare("SELECT private_messages.*, user.username, user.photo FROM private_messages INNER JOIN user ON private_messages.sender_id = user.id WHERE receiver_id = ? OR sender_id = ? ORDER BY timestamp DESC");
+// Récupérez les derniers messages privés de chaque utilisateur où l'utilisateur actuellement connecté est le destinataire
+$stmt = $pdo->prepare("
+    SELECT pm.*, sender.username AS sender_username, sender.photo AS sender_photo, receiver.username AS receiver_username, receiver.photo AS receiver_photo 
+    FROM private_messages pm 
+    INNER JOIN (
+        SELECT MAX(timestamp) AS max_timestamp, sender_id
+        FROM private_messages
+        WHERE receiver_id = ?
+        GROUP BY sender_id
+    ) max_messages ON pm.timestamp = max_messages.max_timestamp AND pm.sender_id = max_messages.sender_id
+    INNER JOIN user sender ON pm.sender_id = sender.id 
+    INNER JOIN user receiver ON pm.receiver_id = receiver.id 
+    WHERE pm.receiver_id = ?
+    ORDER BY pm.timestamp DESC
+");
 $stmt->execute([$_SESSION['user']['id'], $_SESSION['user']['id']]);
-$messages = $stmt->fetchAll();
+$messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +47,7 @@ $messages = $stmt->fetchAll();
 
         .message-container {
             display: flex;
-            align-items: center;
+            align-items: flex-start; /* Aligner les messages en haut */
             margin-bottom: 10px;
             padding: 10px;
         }
@@ -51,6 +64,15 @@ $messages = $stmt->fetchAll();
             border: 1px solid #3f3f3f;
             padding: 10px;
             flex-grow: 1;
+        }
+
+        .sent-message { /* Style pour les messages envoyés */
+            align-self: flex-end; /* Aligner les messages envoyés à droite */
+            background-color: #4caf50;
+        }
+
+        .received-message { /* Style pour les messages reçus */
+            background-color: #2196f3;
         }
 
         h2 {
@@ -70,14 +92,20 @@ $messages = $stmt->fetchAll();
     <h1>Messages privés</h1>
 
     <?php foreach ($messages as $message): ?>
-        <div class="message-container">
-            <img src="<?php echo $message['photo']; ?>" alt="Photo de l'utilisateur" class="user-photo">
-            <div class="message-content">
-                <h2><?php echo $message['username']; ?> à <?php echo $message['timestamp']; ?></h2>
-                <p><?php echo $message['message']; ?></p>
+        <?php
+        $userPhoto = $message['sender_photo'];
+        $username = $message['sender_username'];
+        ?>
+        <a href="profil_utilisateur.php?user_id=<?php echo $message['sender_id']; ?>&receiver_id=<?php echo $message['receiver_id']; ?>">
+            <div class="message-container received-message">
+                <img class="user-photo" src="<?php echo $userPhoto; ?>" alt="Photo utilisateur">
+                <div class="message-content">
+                    <h2><?php echo $username; ?></h2>
+                    <p><?php echo $message['message']; ?></p>
+                </div>
             </div>
-        </div>
-    <?php endforeach; ?>
+        </a>
+    <?php endforeach ;?>
 
 </body>
 

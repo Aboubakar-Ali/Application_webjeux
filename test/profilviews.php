@@ -53,23 +53,8 @@ if (isset($_GET['user_id'])) {
             </div>
 
         </div>
-        <ul class="social-icons">
-            <li>
-                <a href="../edit profil/edit_profile.php">
-                    <i class="fa fa-instagram"> <img class="social-icon" src="https://cdn.discordapp.com/attachments/984816485446852629/1114110196210471012/image.png" alt=""></i>
-                </a>
-            </li>
-            <li>
-                <a href="../articles/publish_article.php">
-                    <i class="fa fa-twitter"><img class="social-icon" src="https://cdn.discordapp.com/attachments/984816485446852629/1114109974562476042/friends_link_send_share_icon_123609.png" alt=""></i>
-                </a>
-            </li>
-        </ul>
-
         <div class="bouton_profil">
-            <a href="../chat privé/private_messages.php"> <button class="btn draw-border">Messages</button></a> 
             <a href="../chat privé/demo.php"> <button class="btn draw-border">DM</button></a>
-            <a href="../stream/upload.php"> <button class="btn draw-border">video push</button></a> 
         </div>
     </div>
 </div>

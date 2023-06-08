@@ -19,8 +19,14 @@
     </head>
 <body>
     <div class="navbar">
-        <a href="../test/test.php" class="profile-link">Profil </a>
+        <?php if (isset($_SESSION['user'])): ?>
+            <a href="../test/test.php?user_id=<?php echo $_SESSION['user']['id']; ?>" class="profile-link">Profil</a>
+        <?php endif; ?>
+        <a href="../stream/play.php" class="profile-link">Videos</a>
     </div>
+
+
+    
         
     <div class="content">
         <div class="main-content">
