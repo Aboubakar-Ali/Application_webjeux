@@ -9,7 +9,7 @@ if (isset($_SESSION['user'])) {
     $user = $stmt->fetch();
 } else {
     header('Location: ../Authentification/connexion/singin.php');
-    exit(); // Assurez-vous de terminer le script après la redirection
+    exit();
 }
 
 if (isset($_GET['user_id'])) {
@@ -18,17 +18,36 @@ if (isset($_GET['user_id'])) {
     $stmt->execute([$user_id]);
     $profile_user = $stmt->fetch();
     if (!$profile_user) {
-        // L'ID de l'utilisateur fourni n'existe pas dans la base de données, vous pouvez rediriger vers une page d'erreur ou utiliser l'ID de l'utilisateur connecté par défaut
-        header('Location: ../Acceuil/acceuil.php'); // Redirige vers le profil de l'utilisateur connecté
-        exit(); // Assurez-vous de terminer le script après la redirection
+        header('Location: ../Acceuil/acceuil.php');
+        exit();
     }
 } else {
-    // Si aucun user_id n'est passé dans l'URL, vous pouvez rediriger vers une page d'erreur ou utiliser l'ID de l'utilisateur connecté par défaut
-    header('Location: test.php?user_id=' . $user_id); // Redirige vers le profil de l'utilisateur connecté
-    exit(); // Assurez-vous de terminer le script après la redirection
-
+    header('Location: test.php?user_id=' . $user_id);
+    exit();
 }
 
+// Récupérer le nombre d'abonnés
+$stmt = $pdo->prepare('SELECT COUNT(*) AS followers_count FROM followers WHERE following_id = ?');
+$stmt->execute([$profile_user['id']]);
+$followersCount = $stmt->fetch()['followers_count'];
+
+// Récupérer la liste des abonnés
+$stmt = $pdo->prepare('SELECT user.username FROM followers JOIN user ON followers.follower_id = user.id WHERE followers.following_id = ?');
+$stmt->execute([$profile_user['id']]);
+$followers = $stmt->fetchAll();
+
+
+
+
+// Vérifier si l'utilisateur connecté suit le profil de l'utilisateur affiché
+$following = false;
+if (isset($_SESSION['user'])) {
+    $follower_id = $_SESSION['user']['id'];
+    $following_id = $profile_user['id'];
+    $stmt = $pdo->prepare("SELECT COUNT(*) FROM followers WHERE follower_id = ? AND following_id = ?");
+    $stmt->execute([$follower_id, $following_id]);
+    $following = $stmt->fetchColumn() > 0;
+}
 ?>
 
 <!DOCTYPE html>
@@ -36,6 +55,17 @@ if (isset($_GET['user_id'])) {
 <head>
     <title>Profil</title>
     <link rel="stylesheet" type="text/css" href="test.css">
+    <style>
+        .followers-list {
+            display: none;
+        }
+    </style>
+    <script>
+        function toggleFollowersList() {
+            var followersList = document.getElementById('followers-list');
+            followersList.style.display = followersList.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
 </head>
 <body>
 <div class="container">
@@ -47,7 +77,20 @@ if (isset($_GET['user_id'])) {
             <div class="grid-child-posts">
                 156 Post
             </div>
-
+            <div class="grid-child-followers">
+                <button onclick="toggleFollowersList()">Follower(s) (<?php echo count($followers); ?>)</button>
+                <div id="followers-list" class="followers-list">
+                    <?php if (!empty($followers)): ?>
+                        <ul>
+                            <?php foreach ($followers as $follower): ?>
+                                <li><?php echo $follower['username']; ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                    <?php else: ?>
+                        <p>Aucun abonné</p>
+                    <?php endif; ?>
+                </div>
+            </div>
             <div class="grid-child-followers">
                 1012 Likes
             </div>
@@ -70,8 +113,45 @@ if (isset($_GET['user_id'])) {
             <a href="../chat privé/private_messages.php"> <button class="btn draw-border">Messages</button></a> 
             <a href="../chat privé/demo.php"> <button class="btn draw-border">DM</button></a>
             <a href="../stream/upload.php"> <button class="btn draw-border">video push</button></a> 
+
+            <?php if ($user_id !== $id): // Ne pas afficher le bouton "Follow" si c'est le profil de l'utilisateur connecté lui-même ?>
+                <?php if ($following): ?>
+                    <button class="follow-button" data-user-id="<?php echo $profile_user['id']; ?>" disabled>Followed</button>
+                <?php else: ?>
+                    <button class="follow-button" data-user-id="<?php echo $profile_user['id']; ?>">Follow</button>
+                <?php endif; ?>
+            <?php endif; ?>
         </div>
     </div>
 </div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        // Gestion du clic sur le bouton "Follow"
+        $('.follow-button').click(function () {
+            var userId = $(this).data('user-id');
+            var button = $(this);
+
+            // Envoi de la demande AJAX pour suivre/unfollow l'utilisateur
+            $.ajax({
+                url: 'follow.php',
+                method: 'POST',
+                data: {
+                    user_id: userId
+                },
+                success: function (response) {
+                    if (response === 'followed') {
+                        button.text('Followed');
+                        button.attr('disabled', true);
+                    } else if (response === 'unfollowed') {
+                        button.text('Follow');
+                        button.attr('disabled', false);
+                    }
+                }
+            });
+        });
+    });
+</script>
 </body>
 </html>
