@@ -7,144 +7,470 @@
     $articles = $stmt->fetchAll();
 
 ?>
+
 <!DOCTYPE html>
 <html>
     <head>
-        <title>acceuil</title>
+        <title>Accueil</title>
         <link rel="stylesheet" type="text/css" href="acceuil.css">
         <script>
             var username = "<?php echo $_SESSION['user']['username']; ?>";
         </script>
-        <script src="../chat general/client/chat.js"></script> 
+        <script src="../chat general/client/chat.js"></script>
+        <script src="../chat general/client/comment.js"></script>
+        <script>
+            function toggleTheme() {
+                document.body.classList.toggle("dark-theme");
+            }
+        </script>
     </head>
-<body>
-    <div class="navbar">
-        <?php if (isset($_SESSION['user'])): ?>
-            <a href="../test/test.php?user_id=<?php echo $_SESSION['user']['id']; ?>" class="profile-link">Profil</a>
-        <?php endif; ?>
-        <a href="../stream/play.php" class="profile-link">Videos</a>
-    </div>
+    <body>
+        <div class="navbar">
+            
+            <?php if (isset($_SESSION['user'])): ?>
+                <a href="../test/test.php?user_id=<?php echo $_SESSION['user']['id']; ?>" class="profile-link">Profil</a>
+                <a href="../stream/play.php" class="profile-link">Videos</a>
+                <a href="../Authentification/logout/logout.php" class="profile-link">logout</a>
+            <?php endif; ?>
+            <button onclick="toggleTheme()">Changer de thème</button>
+            
+            
+            
+        </div>
+        <div class="content">
+            <div class="main-content">
+                <h2>Publications</h2>
+                <?php foreach ($articles as $article): ?>
+                    <div class="article">
+                        <h2><?php echo $article['title']; ?> by <?php echo $article['username']; ?></h2>
+                        <p><?php echo $article['content']; ?></p>
 
-
-    
-        
-    <div class="content">
-        <div class="main-content">
-            <h2>Publications</h2>
-             <!-- Code pour afficher les publications ici -->
-            <?php foreach ($articles as $article): ?>
-                <div>
-                    <h2><?php echo $article['title']; ?>  by  <?php echo $article['username']; ?></h2>
-                    <p><?php echo $article['content']; ?></p>
-
-                    <?php
-                    // Récupérer les likes pour cet article
-                    $stmt = $pdo->prepare('SELECT COUNT(*) AS likes FROM likes WHERE article_id = ?');
-                    $stmt->execute([$article['id']]);
-                    $likes = $stmt->fetch()['likes'];
-                    ?>
-                    <button class="like-button" data-article-id="<?php echo $article['id']; ?>">Like</button>
-                    <span><?php echo $likes; ?> likes</span>
-
-
-                    <?php
-                    // Récupérer les commentaires pour cet article
-                    $stmt = $pdo->prepare('SELECT * FROM comments WHERE article_id = ?');
-                    $stmt->execute([$article['id']]);
-                    $comments = $stmt->fetchAll();
-                    ?>
-                    <!-- Comment Form -->
-                    <form class="comment-form" data-article-id="<?php echo $article['id']; ?>">
-                        <input type="text" name="content" placeholder="Your comment">
-                        <button type="submit">Post Comment</button>
-                    </form>
-                    <!-- Affichez les commentaires -->
-                    <?php foreach ($comments as $comment): ?>
                         <?php
-                        // Récupérer le nom d'utilisateur pour ce commentaire
-                        $stmt = $pdo->prepare('SELECT username FROM user WHERE id = ?');
-                        $stmt->execute([$comment['user_id']]);
-                        $username = $stmt->fetch()['username'];
+                        // Récupérer les likes pour cet article
+                        $stmt = $pdo->prepare('SELECT COUNT(*) AS likes FROM likes WHERE article_id = ?');
+                        $stmt->execute([$article['id']]);
+                        $likes = $stmt->fetch()['likes'];
                         ?>
-                        <div>
-                            <strong><?php echo $username; ?></strong>
-                            <p><?php echo $comment['content']; ?></p>
+                        <button class="toggle-comments-button">Afficher les commentaires</button>
+                        <div class="comment-section hidden">
+                            <?php
+                            $stmt = $pdo->prepare('SELECT * FROM comments WHERE article_id = ?');
+                            $stmt->execute([$article['id']]);
+                            $comments = $stmt->fetchAll();
+                            foreach ($comments as $comment) {
+                                $stmt = $pdo->prepare('SELECT username FROM user WHERE id = ?');
+                                $stmt->execute([$comment['user_id']]);
+                                $username = $stmt->fetch()['username'];
+                                echo '<div class="comment">';
+                                echo '<strong>' . $username . '</strong>';
+                                echo '<p>' . $comment['content'] . '</p>';
+                                echo '</div>';
+                            }
+                            ?>
+                            <div class="comments">
+                                <!-- Zone pour les commentaires -->
+                            </div>
+                            <form class="comment-form" data-article-id="<?php echo $article['id']; ?>">
+                                <input type="text" name="content" placeholder="Ajouter un commentaire">
+                                <button type="submit">Envoyer</button>
+                            </form>
                         </div>
-                    <?php endforeach; ?>
-                </div>
-            <?php endforeach; ?>
-        </div>
-        
-        <div class="chat">
-            <h2>Chat Général</h2>
-            <!-- Code pour afficher le chat ici -->
-            <div id="chat-messages"></div>
-            <form id="chat-form">
-                <input type="text" id="chat-input">
-                <button type="submit">Envoyer</button>
-            </form>
-        </div>
-    </div>
-    <script>
-        // Handle Likes
-        document.querySelectorAll('.like-button').forEach(function(button) {
-            button.addEventListener('click', function() {
-                var articleId = this.getAttribute('data-article-id');
+
+                        <?php
+                        // Vérifier si l'utilisateur est connecté
+                        if (isset($_SESSION['user'])) {
+                            $userId = $_SESSION['user']['id'];
+
+                            // Récupérer la liste des articles likés par l'utilisateur
+                            $stmt = $pdo->prepare('SELECT article_id FROM likes WHERE user_id = ?');
+                            $stmt->execute([$userId]);
+                            $likedArticles = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                            // Mettre à jour le statut de "like" pour l'article actuel
+                            $article['liked'] = in_array($article['id'], $likedArticles);
+                        }
+                        ?>
+
+                        <?php if (isset($_SESSION['user']) && !$article['liked']): ?>
+                            <button class="like-button" data-article-id="<?php echo $article['id']; ?>">Like</button>
+                        <?php else: ?>
+                            <button class="like-button" data-article-id="<?php echo $article['id']; ?>" disabled>Already Liked</button>
+                        <?php endif; ?>
+                        <span><?php echo $likes; ?> likes</span>
+                    </div>
+                <?php endforeach; ?>
                 
-                // Send AJAX request to like article
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '../profil/like_article.php', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                xhr.send('article_id=' + articleId);
+            </div>
 
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        // Update the UI to show the article has been liked
-                        var likesElement = button.nextElementSibling;
-                        var likes = parseInt(likesElement.textContent);
-                        likesElement.textContent = (likes + 1) + ' likes';
-                    }
-                };
+
+            <div class="chat">
+                <h2>Chat Général</h2>
+                <!-- Code pour afficher le chat ici -->
+                <div id="chat-messages"></div>
+                <form id="chat-form">
+                    <input type="text" id="chat-input">
+                    <button type="submit">Envoyer</button>
+                </form>
+            </div>
+
+        </div>
+
+        <script>
+
+            // Toggle Comments
+            document.querySelectorAll('.toggle-comments-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var articleElement = this.closest('.article');
+                    var commentSection = articleElement.querySelector('.comment-section');
+                    commentSection.classList.toggle('hidden');
+                });
             });
-        });
 
-        // Handle Comments
-        document.querySelectorAll('.comment-form').forEach(function(form) {
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                var articleId = this.getAttribute('data-article-id');
-                var content = this.elements['content'].value;
+            // Handle Likes
+            document.querySelectorAll('.like-button').forEach(function(button) {
+                button.addEventListener('click', function() {
+                    var articleId = this.getAttribute('data-article-id');
+                    var likeButton = this; // Ajoutez cette ligne pour référencer le bouton "Like"
 
-                // Send AJAX request to post comment
-                var xhr = new XMLHttpRequest();
-                xhr.open('POST', '../profil/add_comment.php', true);
-                xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                xhr.send('article_id=' + articleId + '&content=' + encodeURIComponent(content));
+                    // Send AJAX request to like article
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '../comment/like_article.php', true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.send('article_id=' + articleId);
 
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        // Update the UI to show the new comment
-                        // Here, we'll create a new comment element and add it to the DOM
-                        var newComment = document.createElement('div');
-                        var strong = document.createElement('strong');
-                        strong.textContent = username; // we assume 'username' is available
-                        var p = document.createElement('p');
-                        p.textContent = content;
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            // Update the UI to show the article has been liked
+                            var likesElement = button.nextElementSibling;
+                            var likes = parseInt(likesElement.textContent);
+                            likesElement.textContent = (likes + 1) + ' likes';
 
-                        newComment.appendChild(strong);
-                        newComment.appendChild(p);
-                        // You need to have a container for the comments
-                        // Let's assume it's a div with the class "comments" that is a sibling of the form
-                        form.nextElementSibling.appendChild(newComment);
-
-                        // Clear the form input
-                        form.elements['content'].value = '';
-                    }
-                };
+                            // Disable the like button
+                            likeButton.disabled = true;
+                        }
+                    };
+                });
             });
-        });
 
 
-    </script>
-</body>
+            // Handle Comments
+            document.querySelectorAll('.comment-form').forEach(function(form) {
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    var articleId = this.getAttribute('data-article-id');
+                    var content = this.elements['content'].value;
+
+                    // Send AJAX request to post comment
+                    var xhr = new XMLHttpRequest();
+                    xhr.open('POST', '../comment/add_comment.php', true);
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.send('article_id=' + articleId + '&content=' + encodeURIComponent(content));
+
+                    xhr.onload = function() {
+                        if (xhr.status === 200) {
+                            // Update the UI to show the new comment
+                            // Here, we'll create a new comment element and add it to the DOM
+                            var newComment = document.createElement('div');
+                            var strong = document.createElement('strong');
+                            strong.textContent = username; // we assume 'username' is available
+                            var p = document.createElement('p');
+                            p.textContent = content;
+
+                            newComment.appendChild(strong);
+                            newComment.appendChild(p);
+
+                            // Update the comment section with the new comment
+                            var commentSection = form.parentNode.querySelector('.comments');
+                            commentSection.appendChild(newComment);
+
+                            // Clear the form input
+                            form.elements['content'].value = '';
+
+                            // Scroll to the newly added comment
+                            newComment.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                        }
+                    };
+                });
+            });
+        </script>
+    </body>
 </html>
+
+
+
+
+
+<style>
+/* acceuil.css */
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.navbar {
+    background-color: #1DA1F2;
+    padding: 30px;
+    height: 80px; /* Nouvelle hauteur de la navbar */
+}
+
+
+.navbar a {
+    color: white;
+    text-decoration: none;
+    margin-right: 20px;
+    line-height: 10px;
+}
+
+.navbar button {
+    background-color: #1DA1F2;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    float: right;
+    margin-top: 5px;
+}
+
+.navbar button:hover {
+    background-color: #0E86D4;
+}
+
+.content {
+    display: flex;
+    justify-content: space-between;
+}
+
+.main-content {
+    flex: 2;
+    padding: 20px;
+}
+
+
+
+h2 {
+    font-size: 20px;
+}
+
+/* Styling for articles */
+
+.article {
+    margin-bottom: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+}
+
+.article:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -15px;
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-right: 15px solid white;
+    border-bottom: 15px solid transparent;
+}
+
+.article:after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -14px;
+    width: 0;
+    height: 0;
+    border-top: 15px solid transparent;
+    border-right: 15px solid #F5F8FA;
+    border-bottom: 15px solid transparent;
+}
+
+.article h2 {
+    margin-top: 0;
+}
+
+.article p {
+    margin-bottom: 10px;
+}
+
+.article {
+    margin-bottom: 20px;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.article h2 {
+    margin-top: 0;
+}
+
+.article p {
+    margin-bottom: 10px;
+}
+
+.like-button {
+    background-color: #1DA1F2;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.like-button:hover {
+    background-color: #0E86D4;
+}
+
+.comment-form input[type="text"] {
+    width: 80%;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+.comment-form button {
+    background-color: #1DA1F2;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.comment-form button:hover {
+    background-color: #0E86D4;
+}
+
+.comments div {
+    margin-top: 10px;
+}
+
+/* Styling for chat */
+
+
+
+#chat-form input[type="text"] {
+    width: 80%;
+    padding: 5px;
+    margin-right: 10px;
+}
+
+#chat-form button {
+    background-color: #1DA1F2;
+    color: white;
+    border: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#chat-form button:hover {
+    background-color: #0E86D4;
+}
+
+.article .comment-section {
+    display: block;
+}
+
+.article .comment-section.hidden {
+    display: none;
+}
+
+
+.dark-theme {
+    background-color: #212121;
+    color: white;
+}
+
+.dark-theme .navbar {
+    background-color: #121212;
+}
+
+.dark-theme .navbar a {
+    color: white;
+}
+
+.dark-theme .navbar button {
+    background-color: #000080;
+}
+
+.dark-theme .content {
+    background-color: #121212;
+}
+
+.dark-theme .article {
+    background-color: #363636;
+    color: white;
+}
+
+.dark-theme .like-button {
+    background-color: #000080;
+}
+
+.dark-theme .comment-form input[type="text"] {
+    background-color: #363636;
+    color: white;
+}
+
+.dark-theme .comment-form button {
+    background-color: #000080;
+}
+
+
+.dark-theme #chat-form input[type="text"] {
+    background-color: #363636;
+    color: white;
+}
+
+.dark-theme #chat-form button {
+    background-color: #000080;
+}
+
+
+#chat-messages {
+    height: 300px;
+    border: 1px solid #ccc;
+    padding: 10px;
+    margin-bottom: 10px;
+    color: black; /* Ajoutez une couleur de texte par défaut pour les messages du chat */
+    overflow: auto; /* Ajoutez cette propriété pour activer la barre de défilement */
+    scroll-behavior: smooth;
+}
+
+.dark-theme #chat-messages {
+    background-color: #363636;
+    color: white; /* Définissez la couleur du texte sur blanc dans le thème sombre */
+    border: 1px solid #777;
+}
+
+
+
+    .chat {
+    position: fixed;
+    top: 60px;
+    right: 20px;
+    background-color: #F5F8FA;
+    padding: 20px;
+    color: black;
+    height: 500px;
+    overflow: auto;
+}
+
+.dark-theme .chat {
+    background-color: #121212;
+    color: white;
+}
+
+.dark-theme .navbar {
+    background-color: #191970; /* Remplacez par la couleur bleu foncé de votre choix */
+}
+
+.dark-theme .navbar a {
+    color: white;
+}
+
+</style>
