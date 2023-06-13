@@ -41,7 +41,7 @@ if (isset($_GET['user_id'])) {
 <div class="container">
     <div class="card">
         <a href="../test/test.php?user_id=<?php echo $profile_user['id']; ?>"><img src="<?php echo $profile_user['photo']; ?>" alt="Photo de profil" class="card__image"></a>
-        <h1 class="card__name"><a href="../test/test.php?user_id=<?php echo $profile_user['id']; ?>"><?php echo $profile_user['username']; ?></a></h1>
+        <h1 class="card__name"><a href="../test/profilviews.php?user_id=<?php echo $profile_user['id']; ?>"><?php echo $profile_user['username']; ?></a></h1>
         <p><?php echo $profile_user['description']; ?></p>
         <div class="grid-container">
             <div class="grid-child-posts">
