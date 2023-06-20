@@ -18,14 +18,14 @@ if (isset($_GET['user_id'])) {
     $stmt->execute([$user_id]);
     $profile_user = $stmt->fetch();
     if (!$profile_user) {
-        // L'ID de l'utilisateur fourni n'existe pas dans la base de données, vous pouvez rediriger vers une page d'erreur ou utiliser l'ID de l'utilisateur connecté par défaut
-        header('Location: ../Acceuil/acceuil.php'); // Redirige vers le profil de l'utilisateur connecté
-        exit(); // Assurez-vous de terminer le script après la redirection
+        // L'ID de l'utilisateur fourni n'existe pas dans la base de données
+        header('Location: ../Acceuil/acceuil.php'); 
+        exit(); 
     }
 } else {
-    // Si aucun user_id n'est passé dans l'URL, vous pouvez rediriger vers une page d'erreur ou utiliser l'ID de l'utilisateur connecté par défaut
-    header('Location: test.php?user_id=' . $user_id); // Redirige vers le profil de l'utilisateur connecté
-    exit(); // Assurez-vous de terminer le script après la redirection
+    // Si aucun user_id n'est passé dans l'URL
+    header('Location: test.php?user_id=' . $user_id); 
+    exit(); 
 
 }
 

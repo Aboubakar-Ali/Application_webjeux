@@ -1,6 +1,7 @@
 <?php
     session_start();
     require('../phpconnect/database.php');
+    // require ('../router.php');
 
     $stmt = $pdo->prepare("SELECT articles.*, user.username FROM articles JOIN user ON articles.user_id = user.id ORDER BY timestamp DESC LIMIT 10");
     $stmt->execute();

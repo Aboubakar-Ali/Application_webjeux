@@ -1,6 +1,7 @@
 <?php
 session_start();
 require('../phpconnect/database.php');
+// require ('../router.php');
 
 if (isset($_SESSION['user'])) {
     $id = $_SESSION['user']['id'];

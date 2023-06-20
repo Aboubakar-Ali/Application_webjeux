@@ -208,7 +208,7 @@ body{
                 </div>
                 <div class="btn">
                     <input class="button1" type="submit" value = "connect"> 
-                    <a href="/Application_webjeux/Authentification/inscription/singup.php"  class="button2">Sign Up</a>
+                    <a href="../inscription/singup.php"  class="button2">Sign Up</a>
                 </div>
                 <button class="button3">Forgot Password</button>
                 <?php if (!empty($message)) : ?>
