@@ -1,5 +1,5 @@
 <?php
-require('../phpconnect/database.php');
+;
 
 // Récupérer l'ID de la vidéo à lire depuis l'URL
 $streamId = $_GET['id'];

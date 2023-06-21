@@ -1,9 +1,9 @@
 <?php
 // Commencez une nouvelle session ou continuez l'ancienne
-session_start();
+
 
 // Connectez-vous à la base de données
-require('../phpconnect/database.php');
+;
 
 // Assurez-vous que l'utilisateur est connecté
 if (!isset($_SESSION['user'])) {
@@ -40,7 +40,8 @@ if (!empty($_POST)) {
 <html>
 <head>
     <title>Envoyer un message privé</title>
-    <link rel="stylesheet" type="text/css" href="inbox.css">
+    <link rel="stylesheet" type="text/css" href="/<?= $root; ?>/chat privé/inbox.css">
+    
 </head>
 <body>
 <body>

@@ -1,6 +1,4 @@
 <?php
-// planté la page si la connexion ne passe pas
-require('../../phpconnect/database.php');
 
 $message = '';
 $messageClass = '';
@@ -24,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $_SESSION['user'] = $user;
 
             // redirection du user sur la page d'acceuil
-            header('Location: ../../Acceuil/acceuil.php');
+            header("Location: /$root/");
         } else {
             $message = 'Nom d\'utilisateur ou mot de passe incorrect';
             $messageClass = 'error';
@@ -144,6 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   transition: .4s ease-in-out;
   background-image: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
   color: rgb(0, 0, 0);
+  text-decoration: none;
+  margin-left:0.15rem ;
 }
 
 .button3:hover {
@@ -152,7 +152,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 .card {
-  background-image: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
   border-radius: 22px;
   transition: all .3s;
   display: flex;
@@ -162,7 +161,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 }
 body{
-  background-image: linear-gradient(163deg, #00ff75 0%, #3700ff 100%);
   overflow: hidden; /* Empêche le défilement */
 }
 
@@ -186,13 +184,34 @@ body{
         .error {
             color: red;
         }
+        .wave-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle, #00ff75 10%, #3700ff 90%);
+            background-size: 200% 200%;
+            animation: waveAnimation 10s linear infinite;
+        }
+
+        @keyframes waveAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
 
     </style>
 </head>
 <body>
+<div class="wave-animation"></div> <!-- L'élément pour les vagues -->
     <div class="card">
         <div class="card2">
-                <form class="form" method="POST" action="singin.php">
+                <form class="form" method="POST" action="">
                 <p id="heading">Login</p>
                 <div class="field">
                     <svg viewBox="0 0 16 16" fill="currentColor" height="16" width="16" xmlns="http://www.w3.org/2000/svg" class="input-icon">
@@ -208,9 +227,10 @@ body{
                 </div>
                 <div class="btn">
                     <input class="button1" type="submit" value = "connect"> 
-                    <a href="../inscription/singup.php"  class="button2">Sign Up</a>
+                    <a href="signup"  class="button2">Sign Up</a>
                 </div>
-                <button class="button3">Forgot Password</button>
+                <a class="button3" href="forgot">Forgot Password</a>
+              
                 <?php if (!empty($message)) : ?>
                 <p class="<?php echo $messageClass; ?>"><?php echo $message; ?></p>
             <?php endif; ?>

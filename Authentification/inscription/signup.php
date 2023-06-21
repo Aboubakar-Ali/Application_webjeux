@@ -1,7 +1,5 @@
-<?php
-// planté la page si la connexion ne passe pas
-require('../../phpconnect/database.php');
 
+<?php
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['username']) && isset($_POST['email']) && isset($_POST['password'])) {
         $username = $_POST['username'];
@@ -18,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
 
             // Sélection d'une image par défaut pour le nouvel utilisateur
-            $default_images = array('../image/profil.jpg', '../image/profil1.jpg'); 
+            $default_images = array('profil.jpg', 'profil1.jpg'); 
             $random_image = $default_images[array_rand($default_images)];
             $default_description = "Hey, Je suis nouveau.";
 
@@ -36,7 +34,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 ?>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -63,7 +60,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             width: 100%;
             height: 100%;
             z-index: -1;
-            background: radial-gradient(circle, #25555a 10%, #1a1c20 90%);
+            background: radial-gradient(circle, red 10%, blue 90%);
             background-size: 200% 200%;
             animation: waveAnimation 10s linear infinite;
         }
@@ -122,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </head>
 <body>
     <div class="wave-animation"></div> <!-- L'élément pour les vagues -->
-    <form method="POST" action="singup.php">
+    <form method="POST" action="">
         <label for="email">Email:</label>
         <input type="email" id="email" name="email" required>
         
@@ -139,4 +136,3 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </form>
 </body>
 </html>
-

@@ -1,9 +1,9 @@
 <?php
 // Commencez une nouvelle session ou continuez l'ancienne
-session_start();
+
 
 // Connectez-vous à la base de données
-require('../phpconnect/database.php');
+;
 
 // Assurez-vous que l'utilisateur est connecté
 if (!isset($_SESSION['user'])) {
@@ -96,7 +96,7 @@ $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
         $userPhoto = $message['sender_photo'];
         $username = $message['sender_username'];
         ?>
-        <a href="profil_utilisateur.php?user_id=<?php echo $message['sender_id']; ?>&receiver_id=<?php echo $message['receiver_id']; ?>">
+        <a href="../messages_p/profil_utilisateur?user_id=<?php echo $message['sender_id']; ?>&receiver_id=<?php echo $message['receiver_id']; ?>">
             <div class="message-container received-message">
                 <img class="user-photo" src="<?php echo $userPhoto; ?>" alt="Photo utilisateur">
                 <div class="message-content">

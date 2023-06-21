@@ -1,6 +1,6 @@
 <?php
-session_start();
-require('../phpconnect/database.php');
+
+;
 
 if (isset($_SESSION['user'])) {
     $id = $_SESSION['user']['id'];

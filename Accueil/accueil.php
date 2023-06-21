@@ -1,7 +1,4 @@
 <?php
-    session_start();
-    require('../phpconnect/database.php');
-    // require ('../router.php');
 
     $stmt = $pdo->prepare("SELECT articles.*, user.username FROM articles JOIN user ON articles.user_id = user.id ORDER BY timestamp DESC LIMIT 10");
     $stmt->execute();
@@ -26,17 +23,13 @@
         </script>
     </head>
     <body>
-        <div class="navbar">
+    <div class="wave-animation">
+        <div class="navbarr">
             
-            <?php if (isset($_SESSION['user'])): ?>
-                <a href="../test/test.php?user_id=<?php echo $_SESSION['user']['id']; ?>" class="profile-link">Profil</a>
-                <a href="../stream/play.php" class="profile-link">Videos</a>
-                <a href="../Authentification/logout/logout.php" class="profile-link">logout</a>
-            <?php endif; ?>
-            <button onclick="toggleTheme()">Changer de thème</button>
-            
-            
-            
+        <?php include 'elements/header.php'; ?>
+     
+            <button onclick="toggleTheme()">thème</button>
+           
         </div>
         <div class="content">
             <div class="main-content">
@@ -115,7 +108,7 @@
             </div>
 
         </div>
-
+</div> <!-- L'élément pour les vagues -->
         <script>
 
             // Toggle Comments
@@ -203,41 +196,40 @@
 
 <style>
 /* acceuil.css */
+.wave-animation {
+   
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: radial-gradient(circle, red 10%, blue 90%);
+    background-size: 200% 200%;
+    animation: waveAnimation 10s linear infinite;
+   margin-top: -15px;
+}
 
-body {
-    font-family: Arial, sans-serif;
+@keyframes waveAnimation {
+    0% {
+        background-position: 0% 50%;
+    }
+    100% {
+        background-position: 100% 50%;
+    }
+}
+
+
+html, body {
     margin: 0;
     padding: 0;
+    font-family: Arial, sans-serif;
+    max-width: 100%;
+    max-height: 100%;
 }
 
-.navbar {
-    background-color: #1DA1F2;
-    padding: 30px;
-    height: 80px; /* Nouvelle hauteur de la navbar */
-}
-
-
-.navbar a {
-    color: white;
-    text-decoration: none;
-    margin-right: 20px;
-    line-height: 10px;
-}
-
-.navbar button {
-    background-color: #1DA1F2;
-    color: white;
-    border: none;
-    padding: 5px 10px;
-    border-radius: 5px;
-    cursor: pointer;
-    float: right;
-    margin-top: 5px;
-}
-
-.navbar button:hover {
-    background-color: #0E86D4;
-}
+.navbarr {
+        margin-top: 5px;
+        display: flex;
+        justify-content: center;
+    }
 
 .content {
     display: flex;
@@ -259,7 +251,6 @@ h2 {
 
 .article {
     margin-bottom: 20px;
-    background-color: white;
     padding: 20px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
@@ -273,9 +264,9 @@ h2 {
     left: -15px;
     width: 0;
     height: 0;
-    border-top: 15px solid transparent;
+    /*border-top: 15px solid transparent;
     border-right: 15px solid white;
-    border-bottom: 15px solid transparent;
+    border-bottom: 15px solid transparent;*/
 }
 
 .article:after {
@@ -285,9 +276,9 @@ h2 {
     left: -14px;
     width: 0;
     height: 0;
-    border-top: 15px solid transparent;
+    /*border-top: 15px solid transparent;
     border-right: 15px solid #F5F8FA;
-    border-bottom: 15px solid transparent;
+    border-bottom: 15px solid transparent;*/
 }
 
 .article h2 {
@@ -452,7 +443,7 @@ h2 {
 
     .chat {
     position: fixed;
-    top: 60px;
+    top: 80px;
     right: 20px;
     background-color: #F5F8FA;
     padding: 20px;
@@ -475,3 +466,5 @@ h2 {
 }
 
 </style>
+
+

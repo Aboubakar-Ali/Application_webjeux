@@ -1,7 +1,6 @@
+
+
 <?php
-session_start();
-require('../phpconnect/database.php');
-// require ('../router.php');
 
 if (isset($_SESSION['user'])) {
     $id = $_SESSION['user']['id'];
@@ -55,10 +54,33 @@ if (isset($_SESSION['user'])) {
 <html>
 <head>
     <title>Profil</title>
-    <link rel="stylesheet" type="text/css" href="test.css">
+    <link rel="stylesheet" type="text/css" href="/<?= $root; ?>/test/test.css">
     <style>
         .followers-list {
             display: none;
+        }
+        .wave-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle, red 10%, blue 90%);
+            background-size: 200% 200%;
+            animation: waveAnimation 10s linear infinite;
+        }
+        a {
+            text-decoration: none;
+        }
+
+        @keyframes waveAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
         }
     </style>
     <script>
@@ -69,10 +91,16 @@ if (isset($_SESSION['user'])) {
     </script>
 </head>
 <body>
+<?php include 'elements/header.php';
+            ?>
+            <div class="wave-animation"></div> <!-- L'élément pour les vagues -->
+        <div class="wave-animation"></div> <!-- L'élément pour les vagues -->
+        <div class="wave-animation"></div> <!-- L'élément pour les vagues -->
 <div class="container">
-    <div class="card">
-        <a href="../test/test.php?user_id=<?php echo $profile_user['id']; ?>"><img src="<?php echo $profile_user['photo']; ?>" alt="Photo de profil" class="card__image"></a>
-        <h1 class="card__name"><a href="../test/test.php?user_id=<?php echo $profile_user['id']; ?>"><?php echo $profile_user['username']; ?></a></h1>
+    
+<div class="card">
+        <a href="/<?= $root; ?>/profil/?user_id=<?php echo $profile_user['id']; ?>"><img src="/<?= $root; ?>/image/<?php echo $profile_user['photo']; ?>" alt="Photo de profil" class="card__image"></a>
+        <h1 class="card__name"><a href="/<?= $root; ?>/profil/?user_id=<?php echo $profile_user['id']; ?>"><?php echo $profile_user['username']; ?></a></h1>
         <p><?php echo $profile_user['description']; ?></p>
         <div class="grid-container">
             <div class="grid-child-posts">
@@ -99,21 +127,21 @@ if (isset($_SESSION['user'])) {
         </div>
         <ul class="social-icons">
             <li>
-                <a href="../edit profil/edit_profile.php">
+                <a href="../edit_p/">
                     <i class="fa fa-instagram"> <img class="social-icon" src="https://cdn.discordapp.com/attachments/984816485446852629/1114110196210471012/image.png" alt=""></i>
                 </a>
             </li>
             <li>
-                <a href="../articles/publish_article.php">
+                <a href="../publish/">
                     <i class="fa fa-twitter"><img class="social-icon" src="https://cdn.discordapp.com/attachments/984816485446852629/1114109974562476042/friends_link_send_share_icon_123609.png" alt=""></i>
                 </a>
             </li>
         </ul>
 
         <div class="bouton_profil">
-            <a href="../chat privé/private_messages.php"> <button class="btn draw-border">Messages</button></a> 
-            <a href="../chat privé/demo.php"> <button class="btn draw-border">DM</button></a>
-            <a href="../stream/upload.php"> <button class="btn draw-border">video push</button></a> 
+            <a href="../messages/private_messages"> <button class="btn draw-border">Messages</button></a> 
+            <a href="../dm/demo"> <button class="btn draw-border">DM</button></a>
+            <a href="../stream/push"> <button class="btn draw-border">video push</button></a> 
 
             <?php if ($user_id !== $id): // Ne pas afficher le bouton "Follow" si c'est le profil de l'utilisateur connecté lui-même ?>
                 <?php if ($following): ?>
@@ -127,6 +155,7 @@ if (isset($_SESSION['user'])) {
 </div>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
     $(document).ready(function () {
         // Gestion du clic sur le bouton "Follow"
@@ -156,3 +185,5 @@ if (isset($_SESSION['user'])) {
 </script>
 </body>
 </html>
+
+

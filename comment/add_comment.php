@@ -1,6 +1,6 @@
 <?php
-session_start();
-require('../phpconnect/database.php');
+
+;
 
 if (isset($_POST['article_id']) && isset($_POST['content']) && isset($_SESSION['user'])) {
     $stmt = $pdo->prepare('INSERT INTO comments (user_id, article_id, content) VALUES (?, ?, ?)');

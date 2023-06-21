@@ -1,6 +1,6 @@
 <?php
-session_start();
-require('../phpconnect/database.php');
+
+;
 
 // Assurez-vous que l'utilisateur est connecté
 if (!isset($_SESSION['user'])) {

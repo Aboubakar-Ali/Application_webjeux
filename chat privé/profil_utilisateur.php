@@ -1,9 +1,9 @@
 <?php
 // Commencez une nouvelle session ou continuez l'ancienne
-session_start();
+
 
 // Connectez-vous à la base de données
-require('../phpconnect/database.php');
+;
 
 // Assurez-vous que l'utilisateur est connecté
 if (!isset($_SESSION['user'])) {

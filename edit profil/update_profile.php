@@ -1,6 +1,6 @@
 <?php
-    session_start();
-    require('../phpconnect/database.php');
+    
+    ;
 
     $username = $_POST['username'];
     $description = $_POST['description'];

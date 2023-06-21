@@ -1,51 +1,32 @@
+
 <?php
-require('../phpconnect/database.php');
 
 // Récupérer toutes les vidéos de la base de données avec les informations utilisateur
 $query = "SELECT streams.*, user.photo FROM streams INNER JOIN user ON streams.user_id = user.id";
 $stmt = $pdo->query($query);
 $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
+<?php
 
+    $stmt = $pdo->prepare("SELECT articles.*, user.username FROM articles JOIN user ON articles.user_id = user.id ORDER BY timestamp DESC LIMIT 10");
+    $stmt->execute();
+    $articles = $stmt->fetchAll();
+
+?>
 <!DOCTYPE html>
 <html>
 <head>
     <title>Liste des vidéos</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
 
         body {
             font-family: Arial, sans-serif;
             overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
             background-color: #000;
         }
 
-        .navbar {
-            background-color: #1d1d1d;
-            color: #fff;
-            padding: 10px;
-            text-align: center;
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1;
-        }
-
-        .navbar h1 {
-            font-size: 24px;
-            color: #fff;
-        }
-
         .video-container {
+            margin-top: 10px;
             width: 100%;
             max-height: calc(100vh - 60px);
             overflow-y: hidden;
@@ -101,9 +82,6 @@ $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         @media screen and (max-width: 480px) {
-            .navbar h1 {
-                font-size: 20px;
-            }
 
             .profile-photo {
                 top: 10px;
@@ -116,14 +94,34 @@ $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 object-position: top;
             }
         }
+        .wave-animation {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(circle, red 10%, blue 90%);
+            background-size: 200% 200%;
+            animation: waveAnimation 10s linear infinite;
+        }
+
+        @keyframes waveAnimation {
+            0% {
+                background-position: 0% 50%;
+            }
+            100% {
+                background-position: 100% 50%;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <h1>Bienvenue sur notre site de vidéos</h1>
-    </div>
-
-
+<?php include 'elements/header.php';
+            ?>
+            <div class="wave-animation"></div> <!-- L'élément pour les vagues -->
+    <div class="wave-animation"></div> <!-- L'élément pour les vagues -->
+    <div class="wave-animation"></div> <!-- L'élément pour les vagues -->
     <div class="video-container">
         <?php foreach ($videos as $video): ?>
             <div class="video-item">
@@ -138,15 +136,15 @@ $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);
                             $profileUser = $stmt->fetch(PDO::FETCH_ASSOC);
                         ?>
                         <?php if ($profileUser): ?>
-                            <a href="../test/profilviews.php?user_id=<?php echo $userId; ?>">
-                                <img src="<?php echo $video['photo']; ?>" alt="Photo utilisateur">
+                            <a href="/<?= $root; ?>/profil/?user_id=<?php echo $userId; ?>">
+                                <img src="/<?= $root; ?>/image/<?php echo $video['photo']; ?>" alt="Photo utilisateur">
                             </a>
                         <?php endif; ?>
                     <?php endif; ?>
                 </div>
 
                 <video controls autoplay loop muted>
-                    <source src="videos/<?php echo $video['stream_key']; ?>" type="video/mp4">
+                    <source src="/<?= $root; ?>/stream_/videos/<?php echo $video['stream_key']; ?>" type="video/mp4">
                 </video>
             </div>
         <?php endforeach; ?>

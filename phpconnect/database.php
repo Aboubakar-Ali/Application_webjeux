@@ -10,12 +10,10 @@ $config=array(
 
 try
 {
-    
     $host=$config['DB_HOST'];
     $dbname=$config['DB_DATABASE'];
 
     $pdo = new PDO("mysql:host=$host;dbname=$dbname",$config['DB_USERNAME'],$config['DB_PASSWORD']);
-    
 }
 catch(PDOException $e)
 {
