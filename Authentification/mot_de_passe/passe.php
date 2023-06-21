@@ -183,7 +183,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 <div class="wave-animation"></div>
     <div class="form">
         <h2 id="heading">Réinitialisation du mot de passe</h2>
-        <form method="post" action="<?php echo $_SERVER["PHP_SELF"]; ?>">
+        <form method="post" action="">
             <div class="field">
                 <label for="email">Email :</label>
                 <input class="input-field" type="email" name="email" required>
@@ -201,8 +201,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             <input class="button12" type="submit" value="Réinitialiser le mot de passe">
         </form>
         <div class="btn">
-            <a href="/Application_webjeux/Authentification/connexion/singin.php" class="button1">Connect</a>
-            <a href="/Application_webjeux/Authentification/inscription/singup.php" class="button1">Sign Up</a>
+            <a href="signin" class="button1">Connect</a>
+            <a href="signup" class="button1">Sign Up</a>
         </div>
         <!-- Affichage des messages de succès et d'erreur -->
     <?php if ($successMessage): ?>
