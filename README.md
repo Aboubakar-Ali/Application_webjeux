@@ -41,7 +41,7 @@ Cordialement,
 
 J'ai acquis la capacité de cultiver l'esprit d'équipe et de placer ma confiance en mes collaborateurs.
 
-## équipe
+## Constitution d'équipe
 
 Je tiens à remercier les membres de mon équipe lors de ce projet. Merci à :
 
