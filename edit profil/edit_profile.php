@@ -113,7 +113,7 @@ if (!empty($_POST)) {
         // Mettre à jour les informations de l'utilisateur dans la session
         $_SESSION['user']['username'] = $username;
         $_SESSION['user']['description'] = $description;
-        $_SESSION['user']['photo'] = $photo_path;
+        $_SESSION['user']['photo'] = $photo_name;
 
         // redirection vers la PP
         header('Location: ../test/test.php');

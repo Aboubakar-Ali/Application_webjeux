@@ -79,181 +79,100 @@ $resultUsers = $pdo->query($sqlUsers);
 <!DOCTYPE html>
 <html>
 <head>
-<title>Tableau de bord ADMIN</title>
+    <title>Tableau de bord ADMIN</title>
     <style>
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f5f5f5;
-    color: #333;
-    margin: 0;
-}
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1a1a1a;
+            color: #fff;
+        }
 
-.container {
-    max-width: 960px;
-    margin: 0 auto;
-    padding: 20px;
-}
+        h1 {
+            font-size: 28px;
+            text-align: center;
+            margin-top: 40px;
+        }
 
-h1 {
-    font-size: 28px;
-    text-align: center;
-    margin-top: 40px;
-    margin-bottom: 20px;
-}
+        h2 {
+            font-size: 24px;
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
 
-h2 {
-    font-size: 24px;
-    margin-top: 40px;
-    margin-bottom: 20px;
-}
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
 
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 20px;
-}
+        th, td {
+            padding: 10px;
+            text-align: left;
+        }
 
-th, td {
-    padding: 10px;
-    text-align: left;
-}
+        th {
+            background-color: #333;
+            color: #fff;
+        }
 
-th {
-    background-color: #333;
-    color: #fff;
-}
+        tr:nth-child(even) {
+            background-color: #444;
+        }
 
-tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
+        tr:hover {
+            background-color: #666;
+        }
 
-tr:hover {
-    background-color: #e6e6e6;
-}
+        .video-wrapper {
+            display: flex;
+            align-items: center;
+        }
 
-.video-wrapper {
-    display: flex;
-    align-items: center;
-}
+        .video-thumbnail {
+            width: 320px;
+            height: 240px;
+            background-color: #222;
+            border-radius: 5px;
+            overflow: hidden;
+        }
 
-.video-thumbnail {
-    width: 320px;
-    height: 240px;
-    background-color: #222;
-    border-radius: 5px;
-    overflow: hidden;
-}
+        .video-thumbnail video {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
 
-.video-thumbnail video {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-}
+        .video-details {
+            margin-left: 20px;
+        }
 
-.video-details {
-    margin-left: 20px;
-}
+        .video-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
 
-.video-title {
-    font-size: 18px;
-    font-weight: bold;
-    margin-bottom: 5px;
-}
+        .video-actions {
+            margin-top: 10px;
+            font-size: 14px;
+        }
 
-.video-actions {
-    margin-top: 10px;
-    font-size: 14px;
-}
+        .video-actions a {
+            margin-right: 10px;
+            color: #00f;
+            text-decoration: none;
+        }
 
-.video-actions a {
-    margin-right: 10px;
-    color: #00f;
-    text-decoration: none;
-}
+        .video-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+        }
 
-.video-list {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-}
-
-.video-item {
-    width: calc(33.33% - 20px);
-    margin-bottom: 20px;
-}
-
-.header {
-    background-color: #333;
-    padding: 10px;
-    margin-bottom: 20px;
-}
-
-.header h1 {
-    color: #fff;
-    margin: 0;
-}
-
-.header a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: bold;
-}
-
-.header a:hover {
-    text-decoration: underline;
-}
-
-.dashboard {
-    display: grid;
-    grid-template-columns: 1fr;
-    grid-gap: 20px;
-}
-
-.dashboard-section {
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 5px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.dashboard-section h2 {
-    margin-top: 0;
-    margin-bottom: 10px;
-}
-
-.dashboard-table {
-    margin-top: 20px;
-}
-
-.dashboard-table th {
-    background-color: #333;
-    color: #fff;
-}
-
-.dashboard-table tr:nth-child(even) {
-    background-color: #f2f2f2;
-}
-
-.dashboard-table tr:hover {
-    background-color: #e6e6e6;
-}
-
-.dashboard-table td {
-    padding: 10px;
-    text-align: left;
-}
-
-.dashboard-table-actions a {
-    margin-right: 10px;
-    color: #00f;
-    text-decoration: none;
-}
-
-.dashboard-table-actions a:hover {
-    text-decoration: underline;
-}
-
-
+        .video-item {
+            width: calc(33.33% - 20px);
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>

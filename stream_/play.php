@@ -28,17 +28,17 @@ $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);
             position:fixed;
             margin-top: 10px;
             width: 1000px;
-            left:800px;
-            max-height: calc(100vh - 100px);
+            height:630px;
+            left:250px;
             overflow-y: hidden;
             scroll-snap-type: y mandatory;
         }
 
         .video-item {
             position: relative;
-            width: 90%;
+            width: 70%;
             margin: 0 auto;
-            height: 1150px;
+            height: 630px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -76,7 +76,7 @@ $videos = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         .video-item video {
             width: 100%;
-            height: auto;
+            height: 100%;
             max-height: calc(100vh - 120px);
             object-fit: cover;
             border-radius: 10px;

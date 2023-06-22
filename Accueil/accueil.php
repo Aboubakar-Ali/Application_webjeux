@@ -18,7 +18,7 @@ $articles = $stmt->fetchAll();
     <script>
         var username = "<?php echo $username; ?>";
     </script>
-    <script src="../chat general/client/chat.js"></script>
+    <script src="chat general/client/chat.js"></script>
     <script src="../chat general/client/comment.js"></script>
     <script>
         function toggleTheme() {
@@ -37,7 +37,7 @@ $articles = $stmt->fetchAll();
     </div>
     <div class="content">
         <div class="main-content">
-            <h2>Publications</h2>
+            <h2 class = "publication">Publications</h2>
             <?php foreach ($articles as $article): ?>
                 <div class="article">
                     <h2><?php echo $article['title']; ?> by <?php echo $article['username']; ?></h2>
@@ -202,6 +202,10 @@ $articles = $stmt->fetchAll();
 
 
 <style>
+.publication{
+    position: relative;
+    left: 90px;
+}
 /* acceuil.css */
 .wave-animation {
    
@@ -259,9 +263,11 @@ h2 {
 .article {
     margin-bottom: 20px;
     padding: 20px;
+    width: 500px;
     border-radius: 10px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: relative;
+    left: 90px;
 }
 
 .article:before {
@@ -449,9 +455,10 @@ h2 {
 
 
     .chat {
-    position: fixed;
-    top: 80px;
-    right: 20px;
+    position: relative;
+    top: 78px;
+    right: 160px;
+    width: 500px;
     background-color: #F5F8FA;
     padding: 20px;
     color: black;
@@ -465,7 +472,7 @@ h2 {
 }
 
 .dark-theme .navbar {
-    background-color: #191970; /* Remplacez par la couleur bleu foncé de votre choix */
+    background-color: #191970; 
 }
 
 .dark-theme .navbar a {

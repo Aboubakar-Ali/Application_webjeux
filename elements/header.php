@@ -27,6 +27,7 @@
         height: 150px;
     }
    .navbar {
+    position: relative;
     background-color: #333; 
     color: #fff;
     display: flex;
@@ -57,6 +58,8 @@
     text-decoration: none;
     font-size: 14px; /* Réduisez davantage la taille de la police */
 }
+
+
 
 </style>
 </body>
