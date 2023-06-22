@@ -167,6 +167,8 @@ if (!$user) {
         }
     </style>
 </head>
+<?php include 'elements/header.php';
+            ?>
 <body>
     <h1>Profil de <?php echo $user['username']; ?></h1>
 

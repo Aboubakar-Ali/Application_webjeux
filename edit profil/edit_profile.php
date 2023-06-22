@@ -64,6 +64,8 @@
         }
     </style>
 </head>
+<?php include 'elements/header.php';
+            ?>
 <body>
     <div class="edit-profile">
         <form action="" method="POST" enctype="multipart/form-data">

@@ -43,7 +43,9 @@ if (!empty($_POST)) {
     <link rel="stylesheet" type="text/css" href="/<?= $root; ?>/chat privé/inbox.css">
     
 </head>
-<body>
+<?php include 'elements/header.php';
+            ?>
+
 <body>
     <form method="POST" action="">
         <div class="container">

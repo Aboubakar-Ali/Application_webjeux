@@ -88,6 +88,8 @@ $messages = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
     </style>
 </head>
+<?php include 'elements/header.php';
+            ?>
 <body>
     <h1>Messages privés</h1>
 

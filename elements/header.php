@@ -45,7 +45,7 @@
 
 .title-container {
     position: relative;
-    left: 500px;
+    left: 100px;
     display: flex;
     flex-grow: 1;
     /* Utilisez 'space-between' pour augmenter l'espacement entre les titres */
