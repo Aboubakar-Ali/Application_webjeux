@@ -143,14 +143,15 @@ if (isset($_SESSION['user'])) {
             <a href="../dm/demo"> <button class="btn draw-border">DM</button></a>
             <a href="../stream/push"> <button class="btn draw-border">video push</button></a> 
 
-            <?php if ($user_id !== $id): // Ne pas afficher le bouton "Follow" si c'est le profil de l'utilisateur connecté lui-même ?>
+            
+        </div>
+        <?php if ($user_id !== $id): // Ne pas afficher le bouton "Follow" si c'est le profil de l'utilisateur connecté lui-même ?>
                 <?php if ($following): ?>
                     <button class="follow-button" data-user-id="<?php echo $profile_user['id']; ?>" disabled>Followed</button>
                 <?php else: ?>
                     <button class="follow-button" data-user-id="<?php echo $profile_user['id']; ?>">Follow</button>
                 <?php endif; ?>
             <?php endif; ?>
-        </div>
     </div>
 </div>
 

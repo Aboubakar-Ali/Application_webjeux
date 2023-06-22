@@ -34,6 +34,9 @@ switch ($route[2]) {
     case "profil":
         include "test/test.php";
         break;
+    case "dashbord":
+        include "Dashbord/dashbord.php";
+        break;
     case "messages":
         include "chat privé/private_messages.php";
         break;

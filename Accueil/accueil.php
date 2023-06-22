@@ -1,194 +1,201 @@
 <?php
 
-    $stmt = $pdo->prepare("SELECT articles.*, user.username FROM articles JOIN user ON articles.user_id = user.id ORDER BY timestamp DESC LIMIT 10");
-    $stmt->execute();
-    $articles = $stmt->fetchAll();
+$username = isset($_SESSION['user']['username']) ? $_SESSION['user']['username'] : '';
+
+$stmt = $pdo->prepare("SELECT articles.*, user.username FROM articles JOIN user ON articles.user_id = user.id ORDER BY timestamp DESC LIMIT 10");
+$stmt->execute();
+$articles = $stmt->fetchAll();
+
+
 
 ?>
 
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Accueil</title>
-        <link rel="stylesheet" type="text/css" href="acceuil.css">
-        <script>
-            var username = "<?php echo $_SESSION['user']['username']; ?>";
-        </script>
-        <script src="../chat general/client/chat.js"></script>
-        <script src="../chat general/client/comment.js"></script>
-        <script>
-            function toggleTheme() {
-                document.body.classList.toggle("dark-theme");
-            }
-        </script>
-    </head>
-    <body>
-    <div class="wave-animation">
-        <div class="navbarr">
-            
+<head>
+    <title>Accueil</title>
+    <link rel="stylesheet" type="text/css" href="acceuil.css">
+    <script>
+        var username = "<?php echo $username; ?>";
+    </script>
+    <script src="../chat general/client/chat.js"></script>
+    <script src="../chat general/client/comment.js"></script>
+    <script>
+        function toggleTheme() {
+            document.body.classList.toggle("dark-theme");
+        }
+    </script>
+</head>
+<body>
+<div class="wave-animation">
+    <div class="navbarr">
+
         <?php include 'elements/header.php'; ?>
-     
-            <button onclick="toggleTheme()">thème</button>
-           
-        </div>
-        <div class="content">
-            <div class="main-content">
-                <h2>Publications</h2>
-                <?php foreach ($articles as $article): ?>
-                    <div class="article">
-                        <h2><?php echo $article['title']; ?> by <?php echo $article['username']; ?></h2>
-                        <p><?php echo $article['content']; ?></p>
 
+        <button onclick="toggleTheme()">thème</button>
+
+    </div>
+    <div class="content">
+        <div class="main-content">
+            <h2>Publications</h2>
+            <?php foreach ($articles as $article): ?>
+                <div class="article">
+                    <h2><?php echo $article['title']; ?> by <?php echo $article['username']; ?></h2>
+                    <p><?php echo $article['content']; ?></p>
+
+                    <?php
+                    // Récupérer les likes pour cet article
+                    $stmt = $pdo->prepare('SELECT COUNT(*) AS likes FROM likes WHERE article_id = ?');
+                    $stmt->execute([$article['id']]);
+                    $likes = $stmt->fetch()['likes'];
+                    ?>
+                    <button class="toggle-comments-button">Afficher les commentaires</button>
+                    <div class="comment-section hidden">
                         <?php
-                        // Récupérer les likes pour cet article
-                        $stmt = $pdo->prepare('SELECT COUNT(*) AS likes FROM likes WHERE article_id = ?');
+                        $stmt = $pdo->prepare('SELECT * FROM comments WHERE article_id = ?');
                         $stmt->execute([$article['id']]);
-                        $likes = $stmt->fetch()['likes'];
-                        ?>
-                        <button class="toggle-comments-button">Afficher les commentaires</button>
-                        <div class="comment-section hidden">
-                            <?php
-                            $stmt = $pdo->prepare('SELECT * FROM comments WHERE article_id = ?');
-                            $stmt->execute([$article['id']]);
-                            $comments = $stmt->fetchAll();
-                            foreach ($comments as $comment) {
-                                $stmt = $pdo->prepare('SELECT username FROM user WHERE id = ?');
-                                $stmt->execute([$comment['user_id']]);
-                                $username = $stmt->fetch()['username'];
-                                echo '<div class="comment">';
-                                echo '<strong>' . $username . '</strong>';
-                                echo '<p>' . $comment['content'] . '</p>';
-                                echo '</div>';
-                            }
-                            ?>
-                            <div class="comments">
-                                <!-- Zone pour les commentaires -->
-                            </div>
-                            <form class="comment-form" data-article-id="<?php echo $article['id']; ?>">
-                                <input type="text" name="content" placeholder="Ajouter un commentaire">
-                                <button type="submit">Envoyer</button>
-                            </form>
-                        </div>
-
-                        <?php
-                        // Vérifier si l'utilisateur est connecté
-                        if (isset($_SESSION['user'])) {
-                            $userId = $_SESSION['user']['id'];
-
-                            // Récupérer la liste des articles likés par l'utilisateur
-                            $stmt = $pdo->prepare('SELECT article_id FROM likes WHERE user_id = ?');
-                            $stmt->execute([$userId]);
-                            $likedArticles = $stmt->fetchAll(PDO::FETCH_COLUMN);
-
-                            // Mettre à jour le statut de "like" pour l'article actuel
-                            $article['liked'] = in_array($article['id'], $likedArticles);
+                        $comments = $stmt->fetchAll();
+                        foreach ($comments as $comment) {
+                            $stmt = $pdo->prepare('SELECT username FROM user WHERE id = ?');
+                            $stmt->execute([$comment['user_id']]);
+                            $username = $stmt->fetch()['username'];
+                            echo '<div class="comment">';
+                            echo '<strong>' . $username . '</strong>';
+                            echo '<p>' . $comment['content'] . '</p>';
+                            echo '</div>';
                         }
                         ?>
-
-                        <?php if (isset($_SESSION['user']) && !$article['liked']): ?>
-                            <button class="like-button" data-article-id="<?php echo $article['id']; ?>">Like</button>
-                        <?php else: ?>
-                            <button class="like-button" data-article-id="<?php echo $article['id']; ?>" disabled>Already Liked</button>
-                        <?php endif; ?>
-                        <span><?php echo $likes; ?> likes</span>
+                        <div class="comments">
+                            <!-- Zone pour les commentaires -->
+                        </div>
+                        <form class="comment-form" data-article-id="<?php echo $article['id']; ?>">
+                            <input type="text" name="content" placeholder="Ajouter un commentaire">
+                            <button type="submit">Envoyer</button>
+                        </form>
                     </div>
-                <?php endforeach; ?>
-                
-            </div>
 
+                    <?php
+                    // Vérifier si l'utilisateur est connecté
+                    if (isset($_SESSION['user'])) {
+                        $userId = $_SESSION['user']['id'];
 
-            <div class="chat">
-                <h2>Chat Général</h2>
-                <!-- Code pour afficher le chat ici -->
-                <div id="chat-messages"></div>
-                <form id="chat-form">
-                    <input type="text" id="chat-input">
-                    <button type="submit">Envoyer</button>
-                </form>
-            </div>
+                        // Récupérer la liste des articles likés par l'utilisateur
+                        $stmt = $pdo->prepare('SELECT article_id FROM likes WHERE user_id = ?');
+                        $stmt->execute([$userId]);
+                        $likedArticles = $stmt->fetchAll(PDO::FETCH_COLUMN);
+
+                        // Mettre à jour le statut de "like" pour l'article actuel
+                        $article['liked'] = in_array($article['id'], $likedArticles);
+                    }
+                    ?>
+
+                    <?php if (isset($_SESSION['user']) && !$article['liked']): ?>
+                        <button class="like-button" data-article-id="<?php echo $article['id']; ?>">Like</button>
+                    <?php else: ?>
+                        <button class="like-button" data-article-id="<?php echo $article['id']; ?>" disabled>Already Liked</button>
+                    <?php endif; ?>
+                    <span><?php echo $likes; ?> likes</span>
+                </div>
+            <?php endforeach; ?>
 
         </div>
+
+
+        <div class="chat">
+            <h2>Chat Général</h2>
+            <!-- Code pour afficher le chat ici -->
+            <div id="chat-messages"></div>
+            <form id="chat-form">
+                <input type="text" id="chat-input">
+                <button type="submit">Envoyer</button>
+            </form>
+        </div>
+
+    </div>
 </div> <!-- L'élément pour les vagues -->
-        <script>
+<script>
 
-            // Toggle Comments
-            document.querySelectorAll('.toggle-comments-button').forEach(function(button) {
-                button.addEventListener('click', function() {
-                    var articleElement = this.closest('.article');
-                    var commentSection = articleElement.querySelector('.comment-section');
-                    commentSection.classList.toggle('hidden');
-                });
-            });
+    // Toggle Comments
+    document.querySelectorAll('.toggle-comments-button').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var articleElement = this.closest('.article');
+            var commentSection = articleElement.querySelector('.comment-section');
+            commentSection.classList.toggle('hidden');
+        });
+    });
 
-            // Handle Likes
-            document.querySelectorAll('.like-button').forEach(function(button) {
-                button.addEventListener('click', function() {
-                    var articleId = this.getAttribute('data-article-id');
-                    var likeButton = this; // Ajoutez cette ligne pour référencer le bouton "Like"
+    // Handle Likes
+    document.querySelectorAll('.like-button').forEach(function(button) {
+        button.addEventListener('click', function() {
+            var articleId = this.getAttribute('data-article-id');
+            var likeButton = this;
+            var likesElement = button.nextElementSibling;
 
-                    // Send AJAX request to like article
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', '../comment/like_article.php', true);
-                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                    xhr.send('article_id=' + articleId);
+            // Check if the article is already liked by the user
+            var isLiked = likeButton.dataset.liked === 'true';
 
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            // Update the UI to show the article has been liked
-                            var likesElement = button.nextElementSibling;
-                            var likes = parseInt(likesElement.textContent);
-                            likesElement.textContent = (likes + 1) + ' likes';
+            // Toggle the like status
+            if (isLiked) {
+                // Remove the like
+                var likes = parseInt(likesElement.textContent);
+                likesElement.textContent = (likes - 1) + ' likes';
+                likeButton.dataset.liked = 'false';
+                likeButton.textContent = 'Like';
+            } else {
+                // Add the like
+                var likes = parseInt(likesElement.textContent);
+                likesElement.textContent = (likes + 1) + ' likes';
+                likeButton.dataset.liked = 'true';
+                likeButton.textContent = 'Liked';
+            }
+        });
+    });
 
-                            // Disable the like button
-                            likeButton.disabled = true;
-                        }
-                    };
-                });
-            });
+    // Handle Comments
+    document.querySelectorAll('.comment-form').forEach(function(form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            var articleId = this.getAttribute('data-article-id');
+            var content = this.elements['content'].value;
 
+            // Send AJAX request to post comment
+            var xhr = new XMLHttpRequest();
+            xhr.open('POST', 'add_comment.php', true);
+            xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+            xhr.send('article_id=' + articleId + '&content=' + encodeURIComponent(content));
 
-            // Handle Comments
-            document.querySelectorAll('.comment-form').forEach(function(form) {
-                form.addEventListener('submit', function(e) {
-                    e.preventDefault();
-                    var articleId = this.getAttribute('data-article-id');
-                    var content = this.elements['content'].value;
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    // Update the UI to show the new comment
+                    // Here, we'll create a new comment element and add it to the DOM
+                    var newComment = document.createElement('div');
+                    newComment.classList.add('comment');
+                    var strong = document.createElement('strong');
+                    strong.textContent = username; // we assume 'username' is available
+                    var p = document.createElement('p');
+                    p.textContent = content;
 
-                    // Send AJAX request to post comment
-                    var xhr = new XMLHttpRequest();
-                    xhr.open('POST', '../comment/add_comment.php', true);
-                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                    xhr.send('article_id=' + articleId + '&content=' + encodeURIComponent(content));
+                    newComment.appendChild(strong);
+                    newComment.appendChild(p);
 
-                    xhr.onload = function() {
-                        if (xhr.status === 200) {
-                            // Update the UI to show the new comment
-                            // Here, we'll create a new comment element and add it to the DOM
-                            var newComment = document.createElement('div');
-                            var strong = document.createElement('strong');
-                            strong.textContent = username; // we assume 'username' is available
-                            var p = document.createElement('p');
-                            p.textContent = content;
+                    // Update the comment section with the new comment
+                    var commentSection = form.parentNode.querySelector('.comments');
+                    commentSection.appendChild(newComment);
 
-                            newComment.appendChild(strong);
-                            newComment.appendChild(p);
+                    // Clear the form input
+                    form.elements['content'].value = '';
 
-                            // Update the comment section with the new comment
-                            var commentSection = form.parentNode.querySelector('.comments');
-                            commentSection.appendChild(newComment);
-
-                            // Clear the form input
-                            form.elements['content'].value = '';
-
-                            // Scroll to the newly added comment
-                            newComment.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-                        }
-                    };
-                });
-            });
-        </script>
-    </body>
+                    // Scroll to the newly added comment
+                    newComment.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                }
+            };
+        });
+    });
+</script>
+</body>
 </html>
+
+
 
 
 
